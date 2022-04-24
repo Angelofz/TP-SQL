@@ -301,3 +301,81 @@ ORDER BY MONTHS_WORKED;
 ```
 ![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/27.png)
 
+## Exercice 4
+
+1. Créez un état qui produit les éléments suivants pour chaque employé : ***<employee last name> earns <salary> monthly but wants <3 times salary.>***. Intitulez la colonne `Dream Salaries`
+
+```sql
+SELECT
+last_name || ' earns ' || TO_CHAR(salary, 'fm$99,999.00') || ' monthly but wants ' || TO_CHAR(3*salary, 'fm$99,999.00') as "Dream Salaries"
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/28.png)
+
+2. Pour chaque employé, affichez le nom, la date d'embauche et la date de révision du salaire, soit le premier lundi après six mois d'ancienneté. Intitulez la colonne `REVIEW`. Affichez les dates sous la forme ***"Monday, the Thirty-First of July, 2000"***
+
+```sql
+SELECT
+    last_name,
+    hire_date,
+    TO_CHAR(NEXT_DAY(ADD_MONTHS(hire_date, 6),'monday'), 'fmDay, "the" Ddspth "of" Month, YYYY') as REVIEW
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/29.png)
+
+3. Affichez le nom, la date d'embauche et le jour de la semaine où l'employé a commencé. Intitulez la colonne `DAY`. Triez les résultats en fonction du jour de la semaine.
+
+    
+```sql
+SELECT
+    last_name,
+    hire_date,
+    TO_CHAR(hire_date,'DAY') as DAY
+FROM employees
+ORDER BY TO_CHAR(hire_date, 'd');
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/30.png)
+
+4. Créez une interrogation qui affiche le nom et le montant de la commission de chaque employé. Si un employé ne perçoit pas de commission, indiquez "No Commission". Intitulez la colonne `COMM`.
+
+```sql
+SELECT
+    last_name,
+    COALESCE(TO_CHAR(commission_pct),'No Comission') as COMM
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/31.png)    
+ 
+5. A l'aide de la fonction DECODE, écrivez une interrogation qui affiche le niveau de tous les employés sur la base de la valeur de la colonne JOB_ID, à l'aide des données suivantes :
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/32.png)
+```sql
+ SELECT
+    job_id,
+    DECODE(job_id,
+        'AD_PRES','A',
+        'ST_MAN','B',
+        'IT_PROG','C',
+        'SA_REP','D',
+        'ST_CLERK','E',
+        0) as GRADE
+FROM employees;   
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/33.png)
+
+6. Réécrivez l'instruction de l'exercice précédent à l'aide de la syntaxe CASE.    
+
+```sql
+SELECT
+    job_id,
+    CASE job_id
+        WHEN 'AD_PRES' THEN 'A'
+        WHEN 'ST_MAN' THEN 'B'
+        WHEN 'IT_PROG' THEN 'C'
+        WHEN 'SA_REP' THEN 'D'
+        WHEN 'ST_CLERK' THEN 'E'
+        ELSE '0'
+    END as GRADE
+FROM employees;
+```
+
+    
