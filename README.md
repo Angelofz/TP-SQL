@@ -1,4 +1,5 @@
 # TP1 SQL Oracle
+***this work required some tables in your workspace : download and execute the script "load_sample.sql" provided in the directory***
 ## Exercice 1
 ### 1.1 Première partie
 
