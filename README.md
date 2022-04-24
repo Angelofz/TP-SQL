@@ -377,5 +377,114 @@ SELECT
     END as GRADE
 FROM employees;
 ```
-
     
+## Exercice 5
+
+1. Les fonctions de groupe opèrent sur plusieurs lignes et produisent un résultat par groupe.
+> Vrai   
+2. Les fonctions de groupe prennent en compte les valeurs NULL dans les calculs.
+> Faux
+3. La clause WHERE restreint les lignes avant inclusion dans un calcul de groupe
+> Vrai
+
+4. Déterminez le salaire le plus élevé, le salaire le plus bas, le salaire cumulé et le salaire moyen pour tous les employés. Intitulez respectivement les colonnes `Maximum`, `Minimum`, `Sum` et `Average`. Arrondissez les résultats à l'entier le plus proche.
+
+```sql    
+SELECT
+    MAX(salary) as Maximum,
+    MIN(salary) as Minimum,
+    SUM(salary) as Sum,
+    ROUND(AVG(salary)) as Average
+FROM employees;
+```    
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/34.png)
+    
+5. Modifiez l'interrogation enregistrée dans le fichier ex_05_04.sql afin d'afficher le salaire minimum, le salaire maximum, le salaire cumulé et le salaire moyen pour chaque type de poste.
+
+```sql 
+SELECT
+    job_id,
+    MAX(salary) as Maximum,
+    MIN(salary) as Minimum,
+    SUM(salary) as Sum,
+    ROUND(AVG(salary)) as Average
+FROM employees
+GROUP BY job_id;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/35.png)
+    
+6. Ecrivez une interrogation permettant d'afficher le nombre de personnes occupant le même poste.
+    
+```sql  
+SELECT
+    job_id,
+    COUNT(*)
+FROM employees
+WHERE job_id = :nom_du_poste
+GROUP BY job_id;
+```    
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/36.png)
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/37.png)
+
+7. Déterminez le nombre de managers sans les répertorier. Intitulez la colonne `Number of Managers`. Indice : Utilisez la colonne `MANAGER_ID` pour déterminer le nombre de Managers
+    
+```sql
+SELECT
+COUNT(DISTINCT(manager_id)) as "Number of Managers"
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/38.png)
+    
+8. Trouvez la différence entre le salaire le plus élevé et le salaire le plus bas. Intitulez la colonne `DIFFERENCE`.
+     
+```sql
+SELECT
+MAX(salary) - MIN(salary) as DIFFERENCE
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/39.png)    
+   
+9. Créez un état permettant d'afficher le numéro de manager et le salaire de l'employé le moins payé sous les ordres de ce manager. Excluez toute personne pour laquelle le manager n'est pas connu. Excluez les groupes dans lesquels le salaire minimum est inférieur ou égal à 6 000 $. Triez les résultats par ordre décroissant sur la base du salaire
+    
+```sql
+SELECT
+    manager_id,
+    MIN(salary)
+FROM employees
+WHERE manager_id IS NOT NULL
+GROUP BY manager_id
+/* HAVING NOT (MIN(Salary) <= 6000); */
+HAVING(MIN(Salary) > 6000)
+ORDER BY MIN(salary) DESC;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/40.png)
+    
+10. Créez une interrogation permettant d'afficher le nombre total d'employés et, pour ce total, le nombre d'employés embauchés en 1995, 1996, 1997 et 1998 (2005, 2006, 2007, 2008). Créez les en-têtes de colonne appropriés.
+
+```sql    
+SELECT
+    COUNT(DISTINCT(employee_id)) as TOTAL,
+    SUM(DECODE(EXTRACT(year FROM hire_date),1995,1)) as "1995",
+    SUM(DECODE(EXTRACT(year FROM hire_date),1996,1)) as "1996",
+    SUM(DECODE(EXTRACT(year FROM hire_date),1997,1)) as "1997",
+    SUM(DECODE(EXTRACT(year FROM hire_date),1998,1)) as "1998"
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/41.png)
+    
+11. Créez une interrogation de matrice permettant d'afficher le poste, le salaire correspondant à ce poste sur la base du numéro de département et le salaire total correspondant à ce poste, pour les départements 20, 50, 80 et 90, en intitulant
+chaque colonne de façon appropriée
+    
+```sql    
+SELECT DISTINCT
+    job_id as Job,
+    DECODE(department_id,20,ROUND(AVG(salary),0)) as "Dept 20",
+    DECODE(department_id,50,ROUND(AVG(salary),0)) as "Dept 50",
+    DECODE(department_id,80,ROUND(AVG(salary),0)) as "Dept 80",
+    DECODE(department_id,90,ROUND(AVG(salary),0)) as "Dept 90",
+    SUM(salary) as Total
+FROM employees
+WHERE department_id is not null
+GROUP BY job_id,department_id;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/42.png)    
