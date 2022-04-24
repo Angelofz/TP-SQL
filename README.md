@@ -82,8 +82,7 @@ FROM employees;
 
 ## Exercice 2
 
-1. Pour des raisons budgétaires, ce département a besoin d'un état affichant le nom
-et le salaire des employés qui gagnent plus de 12 000 $.
+1. Pour des raisons budgétaires, ce département a besoin d'un état affichant le nom et le salaire des employés qui gagnent plus de 12 000 $.
 
 ```sql
 SELECT
@@ -191,9 +190,7 @@ ORDER BY 2 DESC,3 DESC;
 ```
 ![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/16.png)
 
-10. Les membres du département des ressources humaines souhaitent davantage
-de souplesse dans les interrogations que vous écrivez. Ils voudraient un état
-affichant le nom et le salaire des employés qui gagnent plus qu'un montant saisi par
+10. Les membres du département des ressources humaines souhaitent davantage de souplesse dans les interrogations que vous écrivez. Ils voudraient un état affichant le nom et le salaire des employés qui gagnent plus qu'un montant saisi par
 l'utilisateur en réponse à une invite ( &variable (SQL Dev) ou :variable(APEX)).
 
 ```sql
@@ -207,4 +204,100 @@ WHERE salary > :salaire;
 
 ![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/18.png)
 
+## Exercice 3
+
+1. Ecrivez une interrogation permettant d'afficher la date système. Nommez la colonne `Date`.
+
+```sql
+SELECT SYSDATE as "Date"
+FROM DUAL;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/19.png)
+
+2./3. Le département des ressources humaines a besoin d'un état permettant d'afficher le numéro d'employé, le nom, le salaire et le salaire augmenté de 15,5 % (exprimé sous la forme d'un nombre entier) pour chaque employé. Nommez la colonne `New Salary`.
+
+```sql
+SELECT
+    employee_id,
+    last_name,
+    salary,
+    ROUND(salary * 1.155,0) as "New Salary"
+FROM employees;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/2O.png)
+
+4. Modifiez l'interrogation ex_03_02.sql pour ajouter une colonne permettant de soustraire l'ancien salaire du nouveau. Nommez la colonne `Increase`.
+
+```sql
+SELECT
+    employee_id,
+    last_name,
+    salary,
+    "New Salary",
+    "New Salary" - salary as Increase
+FROM 
+(
+    SELECT
+        employee_id,
+        last_name,
+        salary,
+        ROUND(salary * 1.155,0) as "New Salary"
+    FROM employees
+);
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/21.png)
+
+5. Ecrivez une interrogation permettant d'afficher le nom (la première lettre en majuscule et toutes les autres lettres en minuscules) et la longueur du nom de tous les employés dont le nom commence par les lettres "J", "A" ou "M". Attribuez à
+chaque colonne un libellé approprié. Triez les résultats en fonction du nom des employés.
+
+```sql
+SELECT
+    INITCAP(last_name) as Name,
+    LENGTH(last_name) as Length
+FROM employees
+WHERE last_name LIKE 'A%'
+OR last_name LIKE 'J%'
+OR last_name LIKE 'M%'
+ORDER BY last_name;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/22.png)
+
+6. Réécrivez l'interrogation de sorte que l'utilisateur soit invité à saisir la lettre par laquelle le nom doit commencer. Par exemple, si l'utilisateur saisit "H" (en majuscule) à l'invite, le résultat doit afficher tous les employés dont le nom commence par la lettre "H".
+
+```sql
+SELECT
+    INITCAP(last_name) as Name,
+    LENGTH(last_name) as Length
+FROM employees
+WHERE last_name LIKE :start_letter || '%'
+ORDER BY last_name;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/23.png)
+
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/24.png)
+
+7. Modifiez l'interrogation de sorte que la casse de la lettre saisie n'affecte pas le résultat. La lettre saisie doit être convertie en majuscule avant traitement par l'interrogation `SELECT`.
+
+```sql
+SELECT
+    INITCAP(last_name) as Name,
+    LENGTH(last_name) as Length
+FROM employees
+WHERE last_name LIKE INITCAP(:start_letter) || '%'
+ORDER BY last_name;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/25.png)
+
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/26.png)
+
+8. Le département des ressources humaines souhaite connaître l'ancienneté de chaque employé. Pour chacun d'eux, affichez le nom et calculez le nombre de mois entre la date du jour et la date d'embauche de l'employé. Nommez la colonne `MONTHS_WORKED`. Triez les résultats sur la base du nombre de mois d'ancienneté. Arrondissez le nombre de mois au nombre entier supérieur le plus proche.
+
+```sql
+SELECT
+    last_name,
+    CEIL(MONTHS_BETWEEN(SYSDATE,hire_date)) as MONTHS_WORKED
+FROM employees
+ORDER BY MONTHS_WORKED;
+```
+![Cover](https://github.com/Angelofz/TP1-SQL-Oracle/blob/main/image/27.png)
 
